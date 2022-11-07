@@ -123,7 +123,7 @@ async fn main() -> std::io::Result<()> {
             .service(respond_to_poll)
             .service(get_polls)
     })
-    .bind(("127.0.0.1", port))?
+    .bind(("0.0.0.0", port))?
     .run()
     .await
 }
