@@ -48,10 +48,7 @@ lazy_static! {
 
 #[get("/poll")]
 async fn get_polls() -> impl Responder {
-    match serde_json::to_string(&POLLS.lock().unwrap().deref()) {
-        Ok(ps) => HttpResponse::Ok().body(ps),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
-    }
+    HttpResponse::Ok().json(&POLLS.lock().unwrap().deref())
 }
 
 #[post("/poll")]
@@ -82,10 +79,7 @@ async fn get_poll(path: web::Path<String>) -> impl Responder {
     let poll: Option<&Poll> = polls.iter().find(|&p| p.id == id);
 
     match poll {
-        Some(p) => match serde_json::to_string(p) {
-            Ok(p2) => HttpResponse::Ok().body(p2),
-            Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
-        },
+        Some(p) => HttpResponse::Ok().json(p),
         None => HttpResponse::NotFound().body(format!("No poll with id {id}")),
     }
 }
