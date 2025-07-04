@@ -4,7 +4,6 @@ use dotenv::dotenv;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use std::env;
-use std::ops::Deref;
 use std::sync::Mutex;
 use uuid::Uuid;
 
@@ -44,11 +43,6 @@ struct CreatePollRequest {
 
 lazy_static! {
     static ref POLLS: Mutex<Vec<Poll>> = Mutex::new(Vec::new());
-}
-
-#[get("/poll")]
-async fn get_polls() -> impl Responder {
-    HttpResponse::Ok().json(&POLLS.lock().unwrap().deref())
 }
 
 #[post("/poll")]
@@ -115,7 +109,6 @@ async fn main() -> std::io::Result<()> {
             .service(create_poll)
             .service(get_poll)
             .service(respond_to_poll)
-            .service(get_polls)
     })
     .bind(("0.0.0.0", port))?
     .run()
